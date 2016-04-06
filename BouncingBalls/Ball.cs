@@ -52,7 +52,10 @@ namespace BouncingBalls
         {
             Point position = new Point(random.Next(1, maxWidth - 1), random.Next(1, maxHeight - 1));
             Point velocity = new Point(new []{ -1, 1 } [random.Next(0, 2)], new []{ -1, 1 }[random.Next(0, 2)]);
-            return new Ball(position, velocity, '0', new []{ 'O', 'o', '.', '.' }, ConsoleColor.Cyan, ConsoleColor.Blue);
+            Array colors = Enum.GetValues(typeof (ConsoleColor));
+            ConsoleColor ball = (ConsoleColor)colors.GetValue(random.Next(colors.Length));
+            ConsoleColor trail = (ConsoleColor)colors.GetValue(random.Next(colors.Length));
+            return new Ball(position, velocity, '0', new []{ 'O', 'o', '.', '.' }, ball, trail);
         }
     }
 }

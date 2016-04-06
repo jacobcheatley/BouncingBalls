@@ -7,8 +7,10 @@ namespace BouncingBalls
     {
         private readonly int _width;
         private readonly int _height;
-
+        
         private readonly List<Ball> _balls;
+
+        private Object _ballsLock = new Object();
 
         public Field(int width, int height)
         {
@@ -23,44 +25,53 @@ namespace BouncingBalls
 
         public void SpawnBall(Ball ball)
         {
-            _balls.Add(ball);
+            lock (_ballsLock)
+            {
+                _balls.Add(ball);
+            }
         }
-
+        
         public void Update()
         {
-            foreach (Ball ball in _balls)
+            lock (_ballsLock)
             {
-                Point nextPos = ball.NextPos;
-                if (nextPos.X == 0 || nextPos.X == _width - 1)
-                    ball.Velocity *= new Point(-1, 1);
-                if (nextPos.Y == 0 || nextPos.Y == _height - 1)
-                    ball.Velocity *= new Point(1, -1);
-                ball.Position = nextPos;
+                foreach (Ball ball in _balls)
+                {
+                    Point nextPos = ball.NextPos;
+                    if (nextPos.X == 0 || nextPos.X == _width - 1)
+                        ball.Velocity *= new Point(-1, 1);
+                    if (nextPos.Y == 0 || nextPos.Y == _height - 1)
+                        ball.Velocity *= new Point(1, -1);
+                    ball.Position = nextPos;
+                }
             }
         }
 
         public void Draw()
         {
             Console.Clear();
-            //Trails
-            foreach (Ball ball in _balls)
+            lock (_ballsLock)
             {
-                Console.ForegroundColor = ball.TrailColor;
-                for (int i = 0; i < ball.PreviousPositions.Length; i++)
+                //Trails
+                foreach (Ball ball in _balls)
                 {
-                    Point position = ball.PreviousPositions[i];
-                    if (position == null)
-                        break;
-                    Console.SetCursorPosition(position.X, position.Y);
-                    Console.WriteLine(ball.Trail[i]);
+                    Console.ForegroundColor = ball.TrailColor;
+                    for (int i = 0; i < ball.PreviousPositions.Length; i++)
+                    {
+                        Point position = ball.PreviousPositions[i];
+                        if (position == null)
+                            break;
+                        Console.SetCursorPosition(position.X, position.Y);
+                        Console.WriteLine(ball.Trail[i]);
+                    }
                 }
-            }
-            //Balls
-            foreach (Ball ball in _balls)
-            {
-                Console.ForegroundColor = ball.BallColor;
-                Console.SetCursorPosition(ball.Position.X, ball.Position.Y);
-                Console.Write(ball.Shape);
+                //Balls
+                foreach (Ball ball in _balls)
+                {
+                    Console.ForegroundColor = ball.BallColor;
+                    Console.SetCursorPosition(ball.Position.X, ball.Position.Y);
+                    Console.Write(ball.Shape);
+                }
             }
         }
     }
