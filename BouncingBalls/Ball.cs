@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BouncingBalls
 {
@@ -23,13 +24,18 @@ namespace BouncingBalls
         public char Shape { get; }
         public char[] Trail { get; }
 
-        public Ball(Point position, Point velocity, char shape, char[] trail)
+        public ConsoleColor BallColor { get; }
+        public ConsoleColor TrailColor { get; }
+
+        public Ball(Point position, Point velocity, char shape, char[] trail, ConsoleColor ballColor, ConsoleColor trailColor)
         {
             Position = position;
             Velocity = velocity;
             Shape = shape;
             Trail = trail;
             PreviousPositions = new Point[Trail.Length];
+            BallColor = ballColor;
+            TrailColor = trailColor;
         }
 
         public void UpdatePreviousPositions()
@@ -44,9 +50,9 @@ namespace BouncingBalls
 
         public static Ball InBounds(int maxWidth, int maxHeight, System.Random random)
         {
-            Point position = new Point(random.Next(1, maxWidth), random.Next(1, maxHeight));
+            Point position = new Point(random.Next(1, maxWidth - 1), random.Next(1, maxHeight - 1));
             Point velocity = new Point(new []{ -1, 1 } [random.Next(0, 2)], new []{ -1, 1 }[random.Next(0, 2)]);
-            return new Ball(position, velocity, '0', new []{ 'O', 'o', '.', '.' });
+            return new Ball(position, velocity, '0', new []{ 'O', 'o', '.', '.' }, ConsoleColor.Cyan, ConsoleColor.Blue);
         }
     }
 }

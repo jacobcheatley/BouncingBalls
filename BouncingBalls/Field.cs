@@ -45,6 +45,7 @@ namespace BouncingBalls
             //Trails
             foreach (Ball ball in _balls)
             {
+                Console.ForegroundColor = ball.TrailColor;
                 for (int i = 0; i < ball.PreviousPositions.Length; i++)
                 {
                     Point position = ball.PreviousPositions[i];
@@ -57,6 +58,7 @@ namespace BouncingBalls
             //Balls
             foreach (Ball ball in _balls)
             {
+                Console.ForegroundColor = ball.BallColor;
                 Console.SetCursorPosition(ball.Position.X, ball.Position.Y);
                 Console.Write(ball.Shape);
             }
